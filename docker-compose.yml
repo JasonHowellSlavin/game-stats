@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+
+  mysql:
+    container_name: node-docker_mysql_1
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_USER: me
+      MYSQL_PASSWORD: e
+    ports:
+      - "3306:3306"
