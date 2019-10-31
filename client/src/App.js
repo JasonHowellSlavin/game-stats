@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.scss';
 import StatsView from './components/StatsView';
 import GamesView from './components/GamesView';
+import GraphView from './components/GraphView';
 
 class App extends Component {
     constructor(props) {
@@ -126,43 +127,49 @@ class App extends Component {
         return (
             <div className="App">
                 <link href="https://fonts.googleapis.com/css?family=Teko&display=swap" rel="stylesheet"></link>
-                <section>
-                    <div>
-                        <h2>Input scores</h2>
-                    </div>
-                    <form id="input-form">
-                        <label htmlFor="kills">Kills</label>
-                        <input id="kills" type="number"></input>
-                        <label htmlFor="damage">Damage</label>
-                        <input id="damage" type="number"></input>
-                        <label htmlFor="place">Place</label>
-                        <input id="place" type="number"></input>
-                    </form>
-                    <div>
-                        <button onClick={() => {this.postRequest()}}>Post</button>
-                    </div>
-                </section>
-                {/* Componentize these sections */}
-                <section className={'data-section'}>
-                    <div className={"data-section-nav"}>
-                        <ul>
-                            <li nav-value={"daily-stats"} onClick={e => this.setState({dailyNav: e.currentTarget.getAttribute('nav-value')})}>Daily Stats</li>
-                            <li nav-value={"todays-games"} onClick={e => this.setState({dailyNav: e.currentTarget.getAttribute('nav-value')})}>Today's Games</li>
-                        </ul>
-                    </div>
-                    {this.state.dailyNav === 'daily-stats' && <StatsView stats={this.state.dailyStats} title={"Today's Stats"} />}
-                    {this.state.dailyNav === 'todays-games' && <GamesView stats={this.state.dailyStats} title={"Today's Games"} />}
-                </section>
-                <section className={'data-section'}>
-                    <div className={"data-section-nav"}>
-                        <ul>
-                            <li nav-value={"overall-stats"} onClick={e => this.setState({overallNav: e.currentTarget.getAttribute('nav-value')})}>Overall Stats</li>
-                            <li nav-value={"overall-games"} onClick={e => this.setState({overallNav: e.currentTarget.getAttribute('nav-value')})}>Overall Games</li>
-                        </ul>
-                    </div>
-                    {this.state.overallNav === 'overall-stats' && <StatsView stats={this.state.data} title={"Overall Stats"} />}
-                    {this.state.overallNav === 'overall-games' && <GamesView stats={this.state.data} title={"Overall Games"} />}
-                </section>
+                <article>
+                    <section className={'wrapper'}>
+                        <div>
+                            <h2>Input scores</h2>
+                        </div>
+                        <form id="input-form">
+                            <label htmlFor="kills">Kills</label>
+                            <input id="kills" type="number"></input>
+                            <label htmlFor="damage">Damage</label>
+                            <input id="damage" type="number"></input>
+                            <label htmlFor="place">Place</label>
+                            <input id="place" type="number"></input>
+                        </form>
+                        <div>
+                            <button onClick={() => {this.postRequest()}}>Post</button>
+                        </div>
+                    </section>
+                    {/* Componentize these sections */}
+                    <section className={'data-section wrapper'}>
+                        <div className={"data-section-nav"}>
+                            <ul>
+                                <li nav-value={"daily-stats"} onClick={e => this.setState({dailyNav: e.currentTarget.getAttribute('nav-value')})}>Daily Stats</li>
+                                <li nav-value={"todays-games"} onClick={e => this.setState({dailyNav: e.currentTarget.getAttribute('nav-value')})}>Today's Games</li>
+                                <li nav-value={"todays-graphs"} onClick={e => this.setState({dailyNav: e.currentTarget.getAttribute('nav-value')})}>Today's Graphs</li>
+                            </ul>
+                        </div>
+                        {this.state.dailyNav === 'daily-stats' && <StatsView stats={this.state.dailyStats} title={"Today's Stats"} />}
+                        {this.state.dailyNav === 'todays-games' && <GamesView stats={this.state.dailyStats} title={"Today's Games"} />}
+                        {this.state.dailyNav === 'todays-graphs' && <GraphView stats={this.state.dailyStats} title={"Today's Graphs"} />}
+                    </section>
+                    <section className={'data-section wrapper'}>
+                        <div className={"data-section-nav"}>
+                            <ul>
+                                <li nav-value={"overall-stats"} onClick={e => this.setState({overallNav: e.currentTarget.getAttribute('nav-value')})}>Overall Stats</li>
+                                <li nav-value={"overall-games"} onClick={e => this.setState({overallNav: e.currentTarget.getAttribute('nav-value')})}>Overall Games</li>
+                                <li nav-value={"overall-graphs"} onClick={e => this.setState({dailyNav: e.currentTarget.getAttribute('nav-value')})}>Overall Graphs</li>
+                            </ul>
+                        </div>
+                        {this.state.overallNav === 'overall-stats' && <StatsView stats={this.state.data} title={"Overall Stats"} />}
+                        {this.state.overallNav === 'overall-games' && <GamesView stats={this.state.data} title={"Overall Games"} />}
+                    </section>
+                </article>
+                {this.state.dailyNav === 'overall-graphs' && <GraphView stats={this.state.data} title={"Overall's Graphs"} />}
             </div>
         );
     }
