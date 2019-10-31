@@ -1,7 +1,6 @@
 .App {
   display: flex;
   width: 100vw;
-  height: 100vh;
   justify-content: center;
   align-items: center;
   flex-direction: row;
@@ -12,7 +11,12 @@
   font-family: 'Teko', sans-serif;
 }
 
-section {
+article {
+    display: flex;
+    flex-direction: column;
+}
+
+.wrapper {
     display: flex;
     min-width: 300px;
     min-height: 300px;
