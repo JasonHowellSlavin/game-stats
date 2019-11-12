@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import './App.scss';
-import StatsView from './components/StatsView';
-import GamesView from './components/GamesView';
 import GraphView from './components/GraphView';
+import StatsViewer from './components/StatsViewer';
 
 class App extends Component {
     constructor(props) {
@@ -17,6 +16,7 @@ class App extends Component {
         this.createPost = this.createPost.bind(this);
         this.checkForEmptyFields = this.checkForEmptyFields.bind(this);
         this.resetFields = this.resetFields.bind(this);
+        this.editStat = this.editStat.bind(this);
     }
 
     checkForEmptyFields() {
@@ -24,7 +24,7 @@ class App extends Component {
         let dataEntered = [];
 
         inputs.forEach(input => dataEntered.push(input.value !== ""));
-        console.log('apple');
+
 
         return dataEntered.includes(false);
     }
@@ -33,6 +33,39 @@ class App extends Component {
         let inputs = document.querySelector('#input-form').querySelectorAll('input');
 
         inputs.forEach(input => input.value = '');
+    }
+
+    editStat(requestObject) {
+        console.log(requestObject);
+        let dateObj = new Date();
+        let dateString = `${dateObj.getUTCFullYear()}-${dateObj.getUTCMonth() + 1}-${dateObj.getDate()}`;
+
+        (async () => {
+            const update = await fetch('/update/edit', {
+                method: 'POST',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestObject),
+            });
+
+            const dailyStats = await fetch('/stats/daily-stats', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({date: dateString}),
+            })
+            .then(response => response.json());
+
+            const stats = await fetch('/stats')
+            .then(response => response.json())
+            .catch(err => console.log(err));
+
+            this.setState({data: stats, dailyStats: dailyStats});
+        })();
     }
 
     createPost() {
@@ -145,31 +178,11 @@ class App extends Component {
                         </div>
                     </section>
                     {/* Componentize these sections */}
-                    <section className={'data-section wrapper'}>
-                        <div className={"data-section-nav"}>
-                            <ul>
-                                <li nav-value={"daily-stats"} onClick={e => this.setState({dailyNav: e.currentTarget.getAttribute('nav-value')})}>Daily Stats</li>
-                                <li nav-value={"todays-games"} onClick={e => this.setState({dailyNav: e.currentTarget.getAttribute('nav-value')})}>Today's Games</li>
-                                <li nav-value={"todays-graphs"} onClick={e => this.setState({dailyNav: e.currentTarget.getAttribute('nav-value')})}>Today's Graphs</li>
-                            </ul>
-                        </div>
-                        {this.state.dailyNav === 'daily-stats' && <StatsView stats={this.state.dailyStats} title={"Today's Stats"} />}
-                        {this.state.dailyNav === 'todays-games' && <GamesView stats={this.state.dailyStats} title={"Today's Games"} />}
-                        {this.state.dailyNav === 'todays-graphs' && <GraphView stats={this.state.dailyStats} title={"Today's Graphs"} />}
-                    </section>
-                    <section className={'data-section wrapper'}>
-                        <div className={"data-section-nav"}>
-                            <ul>
-                                <li nav-value={"overall-stats"} onClick={e => this.setState({overallNav: e.currentTarget.getAttribute('nav-value')})}>Overall Stats</li>
-                                <li nav-value={"overall-games"} onClick={e => this.setState({overallNav: e.currentTarget.getAttribute('nav-value')})}>Overall Games</li>
-                                <li nav-value={"overall-graphs"} onClick={e => this.setState({dailyNav: e.currentTarget.getAttribute('nav-value')})}>Overall Graphs</li>
-                            </ul>
-                        </div>
-                        {this.state.overallNav === 'overall-stats' && <StatsView stats={this.state.data} title={"Overall Stats"} />}
-                        {this.state.overallNav === 'overall-games' && <GamesView stats={this.state.data} title={"Overall Games"} />}
-                    </section>
+                    <StatsViewer data={this.state.dailyStats} statsLabel={"Today's"} editGame={this.editStat} />
+                    <StatsViewer data={this.state.data} statsLabel={"Overall"} editGame={this.editStat} />
                 </article>
                 {this.state.dailyNav === 'overall-graphs' && <GraphView stats={this.state.data} title={"Overall's Graphs"} />}
+                <button onClick={() => {this.editStat({id: '334', damage: '1450', kills: '153', place: '1', time: '07:34:09'})}}>Edit Stat Button</button>
             </div>
         );
     }

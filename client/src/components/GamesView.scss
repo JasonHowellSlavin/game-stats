@@ -16,9 +16,19 @@
         margin: 10px 10px;
         padding: 2px;
 
+        .input-holder {
+            display: flex;
+            flex-direction: column;
+        }
+
         p {
             margin: 20px 10px;
             font-size: 20px;
+        }
+
+        input {
+            font-size: 20px;
+            max-width: 50px;
         }
     }
 }
