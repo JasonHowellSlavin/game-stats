@@ -24,7 +24,7 @@ rootConnection.query('CREATE TABLE Users (user_id int PRIMARY KEY NOT NULL AUTO_
     console.log('Table Users created');
 });
 
-rootConnection.query('CREATE TABLE ApexStats (user int, kills int, damage int, win boolean, place int, date DATE, time TIME, FOREIGN KEY(user) REFERENCES Users(user_id) ON DELETE CASCADE)',
+rootConnection.query('CREATE TABLE ApexStats (ID int AUT_INCRMENET PRIMARY KEY, user int, kills int, damage int, win boolean, place int, date DATE, time TIME, FOREIGN KEY(user) REFERENCES Users(user_id) ON DELETE CASCADE)',
  (error, results, fields) => {
     if (error) throw error;
     console.log('Table ApexStats created');

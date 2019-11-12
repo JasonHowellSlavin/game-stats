@@ -11,3 +11,7 @@ services:
       MYSQL_PASSWORD: e
     ports:
       - "3306:3306"
+    volumes:
+        - apex-stats-data:/var/lib/mysql
+volumes:
+    apex-stats-data:

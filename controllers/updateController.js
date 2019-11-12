@@ -30,6 +30,38 @@ function updateStats(reqObj) {
     });
 }
 
+function getRecord(reqObj, res) {
+    let id = Object.values(reqObj);
+    console.log(id, 'here is the ID', 'here is object.valiues', reqObj);
+
+    connection.query('SELECT * FROM ApexStats WHERE ID = ?', id, (err, response) => {
+        if (err) throw err;
+        console.log('Found record with id of ' + id);
+        if (response.length === 1) {
+            res.send(JSON.stringify(response));
+        } else {
+            res.send(JSON.stringify({'status': 'failed', 'errorMessage': 'More than one record returned'}));
+        }
+    })
+}
+
+function modifyRecord(reqObj, res) {
+    let win = parseInt(reqObj.place) === 1 ? 1 : 0;
+    let updateValues = [reqObj.kills, reqObj.damage, win, reqObj.place, reqObj.time, reqObj.id];
+
+    if (typeof parseInt(reqObj.id) !== 'number') {
+        res.send(JSON.stringify({'status': 'failed', 'errorMessage': 'The ID for the request was not a number'}))
+        return;
+    }
+
+    connection.query('UPDATE ApexStats SET kills = ?, damage = ?, win = ?, place = ?, time = ? WHERE ID = ?',
+    updateValues,
+    (err) => {
+        if (err) throw err;
+        res.send({'status' : 'success', 'successMessage': 'Your values have been updated'});
+    });
+}
+
 exports.update = (req, res) => {
     console.log(`This is the body of the request: ${req.body}`);
 
@@ -40,4 +72,10 @@ exports.update = (req, res) => {
     updateStats(requestObject);
 
     res.send({success: 'Succesfully updated stats'});
+}
+
+exports.edit = (req, res) => {
+    console.log(`This is the body of the request: ${req.body}, ${req.body.id}`);
+
+    modifyRecord(req.body, res);
 }
