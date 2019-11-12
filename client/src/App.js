@@ -182,7 +182,6 @@ class App extends Component {
                     <StatsViewer data={this.state.data} statsLabel={"Overall"} editGame={this.editStat} />
                 </article>
                 {this.state.dailyNav === 'overall-graphs' && <GraphView stats={this.state.data} title={"Overall's Graphs"} />}
-                <button onClick={() => {this.editStat({id: '334', damage: '1450', kills: '153', place: '1', time: '07:34:09'})}}>Edit Stat Button</button>
             </div>
         );
     }
