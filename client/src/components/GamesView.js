@@ -38,7 +38,7 @@ class GamesView extends Component {
                         <h2>{this.props.title}</h2>
                     </div>
                     <div className={'todays-games'}>
-                        {this.props.stats.length > 0 && this.props.stats.reverse().map((item, index) => {
+                        {this.props.stats.length > 0 && this.props.stats.map((item, index) => {
                             if (this.state.isEditable === false) {
                                 return (
                                     <div key={`id:${item.ID}`} data-item-id={item.ID} className={"stat-block"}>
@@ -46,8 +46,8 @@ class GamesView extends Component {
                                         <p>Damage: {item.damage}</p>
                                         <p>Place: {item.place}</p>
                                         <p>Time: {item.time}</p>
+                                        <p>Date: {item.date.substr(0, item.date.indexOf('T'))}</p>
                                         <button
-                                            style={{'border': '2px solid black', 'padding': '2px', 'margin': '24px 0', 'fontSize': '16px'}}
                                             onClick={(e) => {
                                                 this.toggleEditable(e);
                                             }}
