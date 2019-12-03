@@ -8,7 +8,7 @@ const connection = mysql.createConnection({
 });
 
 exports.stats = (req, res) => {
-    connection.query('SELECT * FROM ApexStats', (error, results, fields) => {
+    connection.query('SELECT * FROM ApexStats ORDER BY ID DESC', (error, results, fields) => {
         if (error) throw error;
         res.send((JSON.stringify(results)));
     })

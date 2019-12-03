@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 import './App.scss';
 import GraphView from './components/GraphView';
 import StatsViewer from './components/StatsViewer';
+import Nav from './components/Nav';
 
 class App extends Component {
     constructor(props) {
@@ -11,6 +18,11 @@ class App extends Component {
             dailyStats: [],
             dailyNav: 'daily-stats',
             overallNav: 'overall-stats',
+            nav: [
+                {path: '/', title: 'Home'},
+                {path: '/overall-stats', title: 'Overall Stats'},
+                {path: '/todays-stats', title: "Today's Stats"}
+            ]
         };
         this.postRequest = this.postRequest.bind(this);
         this.createPost = this.createPost.bind(this);
@@ -24,8 +36,6 @@ class App extends Component {
         let dataEntered = [];
 
         inputs.forEach(input => dataEntered.push(input.value !== ""));
-
-
         return dataEntered.includes(false);
     }
 
@@ -136,7 +146,7 @@ class App extends Component {
         let dateString = `${dateObj.getUTCFullYear()}-${dateObj.getUTCMonth() + 1}-${dateObj.getDate()}`;
 
         (async () => {
-            const rawResponse = await fetch('/stats/daily-stats', {
+            const daily = await fetch('/stats/daily-stats', {
             method: 'POST',
             headers: {
               'Accept': 'application/json',
@@ -150,7 +160,7 @@ class App extends Component {
           .catch(err => console.log(err));
 
           overAllStats = await stats;
-          dailyStats = await rawResponse.json();
+          dailyStats = await daily.json();
 
           await this.setState({data: overAllStats, dailyStats: dailyStats});
         })();
@@ -158,31 +168,44 @@ class App extends Component {
 
     render() {
         return (
-            <div className="App">
-                <link href="https://fonts.googleapis.com/css?family=Teko&display=swap" rel="stylesheet"></link>
-                <article>
-                    <section className={'wrapper'}>
-                        <div>
-                            <h2>Input scores</h2>
-                        </div>
-                        <form id="input-form">
-                            <label htmlFor="kills">Kills</label>
-                            <input id="kills" type="number"></input>
-                            <label htmlFor="damage">Damage</label>
-                            <input id="damage" type="number"></input>
-                            <label htmlFor="place">Place</label>
-                            <input id="place" type="number"></input>
-                        </form>
-                        <div>
-                            <button onClick={() => {this.postRequest()}}>Post</button>
-                        </div>
-                    </section>
-                    {/* Componentize these sections */}
-                    <StatsViewer data={this.state.dailyStats} statsLabel={"Today's"} editGame={this.editStat} />
-                    <StatsViewer data={this.state.data} statsLabel={"Overall"} editGame={this.editStat} />
-                </article>
-                {this.state.dailyNav === 'overall-graphs' && <GraphView stats={this.state.data} title={"Overall's Graphs"} />}
-            </div>
+                <div className="App">
+                    <link href="https://fonts.googleapis.com/css?family=Teko&display=swap" rel="stylesheet"></link>
+                        <Router>
+                            <Nav links={this.state.nav}></Nav>
+                            <article>
+                                <Switch>
+                                    <Route exact path="/">
+                                        <section className={'wrapper input-section'}>
+                                            <div>
+                                                <h2>Input scores</h2>
+                                            </div>
+                                            <form id="input-form">
+                                                <label htmlFor="kills">Kills</label>
+                                                <input id="kills" type="number"></input>
+                                                <label htmlFor="damage">Damage</label>
+                                                <input id="damage" type="number"></input>
+                                                <label htmlFor="place">Place</label>
+                                                <input id="place" type="number"></input>
+                                            </form>
+                                            <div>
+                                                <button onClick={() => {this.postRequest()}}>Post</button>
+                                            </div>
+                                        </section>
+                                    </Route>
+                                    <Route path="/overall-stats">
+                                        <StatsViewer data={this.state.data} statsLabel={"Overall"} editGame={this.editStat} />
+                                    </Route>
+                                    <Route path="/todays-stats">
+                                        <StatsViewer data={this.state.dailyStats} statsLabel={"Today's"} editGame={this.editStat} />
+                                    </Route>
+                                    <Route path="/apple">
+                                        <h1>Apple</h1>
+                                    </Route>
+                                </Switch>
+                            </article>
+                        </Router>
+                    {this.state.dailyNav === 'overall-graphs' && <GraphView stats={this.state.data} title={"Overall's Graphs"} />}
+                </div>
         );
     }
 }
